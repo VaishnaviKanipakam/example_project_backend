@@ -125,3 +125,23 @@ app.post("/login", (request, response) => {
     }
   });
 });
+
+
+//get all users
+app.get("/get_users", (request, response) => {
+  const get_all_users_query = `
+    SELECT
+      *
+    FROM
+        example_user_table;
+  `;
+  db.query(get_all_users_query, (err, result) => {
+    if(err){
+      response.status(401).json("Cannot get users");
+      console.log("141", err)
+      return 
+    }
+    response.status(200).json(result)
+    console.log("145", result)
+  })
+})
