@@ -19,7 +19,7 @@ const initializeDbAndServer = async () => {
     //   insecureAuth: true,
     // });
 
-    const db = mysql.createPool({
+  db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -78,10 +78,10 @@ app.post("/example_signup", (request, response) => {
            INSERT INTO 
                 example_user_table (name,  mobile_number, email, password)
             values (
-                "${name}", "${mobileNumber}", "${email}", "${password}"
+                ?, ?, ?, ? 
             ); `;
 
-    db.query(insert_user_details, (err, result) => {
+    db.query(insert_user_details,[name, mobileNumber, email, password], (err, result) => {
       if (err) {
         response.status(500).json("Enter Valid Details");
         console.log("68", err);
