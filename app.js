@@ -8,7 +8,7 @@ const cors = require("cors");
 app.use(express.json());
 app.use(cors());
 
-let db = null;
+
 const initializeDbAndServer = async () => {
   try {
     // db = mysql.createConnection({
