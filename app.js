@@ -1,7 +1,10 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const mysql = require("mysql2");
 const cors = require("cors");
+// import mysql from "mysql2/promise";
+// import 'dotenv/config';
 
 app.use(express.json());
 app.use(cors());
@@ -10,19 +13,20 @@ let db = null;
 const initializeDbAndServer = async () => {
   try {
     db = mysql.createConnection({
-      host: "localhost",
-      user: "vaishu",
-      password: "Bharu@96",
-      database: "example_project_backend",
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       insecureAuth: true,
     });
-    const port = 3004
+   
+    const port = process.env.DB_PORT || 3004;
     app.listen(port, () => {
-      console.log(`app listening at ${3004}...`); 
+      console.log(`app listening at ${port}...`);
     });
     db.connect(function (err) {
       if (err) throw err;
-      console.log("Conected!");
+      console.log("Conected!"); 
     });
   } catch (e) {
     console.log(`DB Error: ${e.message}`);
@@ -49,7 +53,7 @@ app.post("/example_signup", (request, response) => {
   db.query(create_user_table, (err, result) => {
     if (err) {
       response.status(500);
-      console.log("52", err)
+      console.log("52", err);
       return;
     }
     const insert_user_details = `
@@ -62,15 +66,14 @@ app.post("/example_signup", (request, response) => {
     db.query(insert_user_details, (err, result) => {
       if (err) {
         response.status(500).json("Enter Valid Details");
-        console.log("68", err)
+        console.log("68", err);
         return;
       }
       response.status(200).json(result);
-      console.log("72", result) 
+      console.log("72", result);
     });
   });
 });
-
 
 //login API
 app.post("/login", (request, response) => {
@@ -89,22 +92,18 @@ app.post("/login", (request, response) => {
   db.query(get_login_details_query, (err, result) => {
     if (err) {
       response.status(500).json("Cannot Get Details");
-      console.log("95", err)
+      console.log("95", err);
       return;
     } else if (
       result.length !== 0 &&
       result[0].mobile_number === mobileNumber &&
       result[0].password === password
     ) {
-    //   const payload = { mobileNumber: mobileNumber };
-    //   const jwtToken = jwt.sign(payload, "oaapmcntholamc");
       response.status(200).json(result);
-      console.log("105", result)
+      console.log("105", result);
     } else if (result.length == 0) {
       response.status(500).json("Enter Valid Mobile Number and Password");
-      console.log("108err")
+      console.log("108err");
     }
   });
 });
-
-
